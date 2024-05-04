@@ -9,7 +9,7 @@ import {
 
 const getAll = async (req, res, next) => {
   try {
-    const result = await contactsServices.getAllContacts();
+    const result = await contactsServices.listContacts();
     res.json(result);
   } catch (error) {
     next(error);
@@ -30,6 +30,20 @@ const getById = async (req, res, next) => {
   }
 };
 
+const deleteById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await contactsServices.removeContact(id);
+    if (!result) {
+      throw HttpError(404, `Movie with id=${id} not found`);
+    }
+    res.json({
+      message: "Delete success",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const add = async (req, res, next) => {
   try {
     const { error } = contactAddSchema.validate(req.body);
@@ -58,21 +72,6 @@ const updateById = async (req, res, next) => {
     }
 
     res.json(result);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const deleteById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await contactsServices.deleteContactById(id);
-    if (!result) {
-      throw HttpError(404, `Movie with id=${id} not found`);
-    }
-    res.json({
-      message: "Delete success",
-    });
   } catch (error) {
     next(error);
   }
