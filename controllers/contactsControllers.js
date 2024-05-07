@@ -1,5 +1,4 @@
 import * as contactsServices from "../services/contactsServices.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAll = async (_, res) => {
