@@ -11,15 +11,15 @@ export const listContacts = async () => {
   return JSON.parse(data);
 };
 
-export const getContactById = async (contactId) => {
+export const getContactById = async (id) => {
   const contacts = await listContacts();
-  const result = contacts.find((item) => item.id === contactId);
+  const result = contacts.find((item) => item.id === id);
   return result || null;
 };
 
-export const removeContact = async (contactId) => {
+export const removeContact = async (id) => {
   const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === contactId);
+  const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
     return null;
   }
@@ -29,27 +29,25 @@ export const removeContact = async (contactId) => {
 
   return result;
 };
-export const addContact = async (name, email, phone) => {
+export const addContact = async (data) => {
   const contacts = await listContacts();
   const newContact = {
     id: nanoid(),
-    name,
-    email,
-    phone,
+    ...data,
   };
   contacts.push(newContact);
   await updateContacts(contacts);
 
   return newContact;
 };
-export const updateContactById = async (id, name, email, phone) => {
+export const updateContactById = async (id, data) => {
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
     return null;
   }
 
-  contacts[index] = { ...contacts[index], name, email, phone };
+  contacts[index] = { ...contacts[index], ...data };
   await updateContacts(contacts);
 
   return contacts[index];
