@@ -28,13 +28,19 @@ const deleteById = async (req, res) => {
   });
 };
 const add = async (req, res) => {
-  const result = await contactsServices.addContact(req.body);
+  const { name, email, phone } = req.body;
+  const result = await contactsServices.addContact(name, email, phone);
   res.status(201).json(result);
 };
 
 const updateById = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.updateContactById(id, req.body);
+  const result = await contactsServices.updateContactById(
+    id,
+    name,
+    email,
+    phone
+  );
   if (!result) {
     throw HttpError(404, `Not found`);
   }
