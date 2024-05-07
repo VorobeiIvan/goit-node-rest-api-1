@@ -1,86 +1,50 @@
 import * as contactsServices from "../services/contactsServices.js";
-
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
-import {
-  contactAddSchema,
-  contactUpdateSchema,
-} from "../schemas/contactsSchemas.js";
-
-const getAll = async (req, res, next) => {
-  try {
-    const result = await contactsServices.listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
+const getAll = async (_, res) => {
+  const result = await contactsServices.listContacts();
+  res.json(result);
 };
 
-const getById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await contactsServices.getContactById;
-    if (!result) {
-      throw HttpError(404, `Movie with id=${id} not found`);
-    }
-
-    res.json(result);
-  } catch (error) {
-    next(error);
+const getById = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServices.getContactById(id);
+  if (!result) {
+    throw HttpError(404, `Not found`);
   }
+
+  res.json(result);
 };
 
-const deleteById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await contactsServices.removeContact(id);
-    if (!result) {
-      throw HttpError(404, `Movie with id=${id} not found`);
-    }
-    res.json({
-      message: "Delete success",
-    });
-  } catch (error) {
-    next(error);
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServices.removeContact(id);
+  if (!result) {
+    throw HttpError(404, `Not found`);
   }
+  res.json({
+    message: "Delete success",
+  });
 };
-const add = async (req, res, next) => {
-  try {
-    const { error } = contactAddSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
-    const result = await contactsServices.addContact(req.body);
-
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
+const add = async (req, res) => {
+  const result = await contactsServices.addContact(req.body);
+  res.status(201).json(result);
 };
 
-const updateById = async (req, res, next) => {
-  try {
-    const { error } = contactUpdateSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
-
-    const { id } = req.params;
-    const result = await contactsServices.updateContactById(id, req.body);
-    if (!result) {
-      throw HttpError(404, `Movie with id=${id} not found`);
-    }
-
-    res.json(result);
-  } catch (error) {
-    next(error);
+const updateById = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServices.updateContactById(id, req.body);
+  if (!result) {
+    throw HttpError(404, `Not found`);
   }
+  res.json(result);
 };
 
 export default {
-  getAll,
-  getById,
-  add,
-  updateById,
-  deleteById,
+  getAll: ctrlWrapper(getAll),
+  getById: ctrlWrapper(getById),
+  add: ctrlWrapper(add),
+  updateById: ctrlWrapper(updateById),
+  deleteById: ctrlWrapper(deleteById),
 };
