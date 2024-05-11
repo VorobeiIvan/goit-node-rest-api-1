@@ -29,4 +29,11 @@ contactsRouter.put(
 
 contactsRouter.delete("/:id", contactsControllers.deleteById);
 
+contactsRouter.put(
+  "/:id/favorite",
+  isEmptyBody,
+  validateBody(contactUpdateSchema),
+  contactsControllers.toggleFavorite
+);
+
 export default contactsRouter;

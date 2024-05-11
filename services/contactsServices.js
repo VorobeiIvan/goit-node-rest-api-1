@@ -52,3 +52,14 @@ export const updateContactById = async (id, data) => {
 
   return contacts[index];
 };
+
+export const updateStatusContact = async (id, data) => {
+  const contacts = await listContacts();
+  const index = contacts.findIndex((item) => item.id === id);
+  if (index === -1) {
+    return null;
+  }
+
+  contacts[index] = { ...contacts[index], favorite: data };
+  await updateContacts(contacts);
+};
