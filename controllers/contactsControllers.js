@@ -36,7 +36,7 @@ const updateById = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Not found`);
   }
-  res.json(result);
+  res.status(200).json(result);
 };
 
 const toggleFavorite = async (req, res) => {
@@ -46,7 +46,7 @@ const toggleFavorite = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Not found`);
   }
-  res.json(result);
+  res.status(200).json(result);
 };
 
 export default {
