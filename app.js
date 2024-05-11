@@ -29,7 +29,6 @@ connect(DB_HOST)
   .then(() =>
     app.listen(PORT, () => {
       console.log("Database connection successful");
-      console.log(`Server is running. Use our API on port: ${PORT}`);
     })
   )
   .catch((error) => {
