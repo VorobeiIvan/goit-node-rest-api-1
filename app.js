@@ -1,9 +1,12 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import mongoose from "mongoose";
+import { connect } from "mongoose";
+import "dotenv/config";
 
 import contactsRouter from "./routes/contactsRouter.js";
+
+const { DB_HOST, PORT = 3000 } = process.env;
 
 const app = express();
 
@@ -22,13 +25,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-const PORT = 3000;
-const PASSWORD = "1RZroakyOEd7fJUn";
-const DB = "db-contacts";
-const DB_HOST = `mongodb+srv://Ivan:${PASSWORD}@cluster0.cnaynk7.mongodb.net/${DB}?retryWrites=true&w=majority&appName=Cluster0`;
-
-mongoose
-  .connect(DB_HOST)
+connect(DB_HOST)
   .then(() =>
     app.listen(PORT, () => {
       console.log("Database connection successful");

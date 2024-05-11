@@ -1,65 +1,17 @@
-import fs from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
-
-const contactsPath = path.join("db", "contacts.json");
-const updateContacts = (contacts) =>
-  fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-
-export const listContacts = async () => {
-  const data = await fs.readFile(contactsPath);
-  return JSON.parse(data);
+import Contact from "../models/contact";
+export const getAllContacts = (search = {}) => {
+  const { filter = {} } = search;
+  return Contact.find(filter);
 };
 
-export const getContactById = async (id) => {
-  const contacts = await listContacts();
-  const result = contacts.find((item) => item.id === id);
-  return result || null;
-};
-
-export const removeContact = async (id) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === id);
-  if (index === -1) {
-    return null;
-  }
-
-  const [result] = contacts.splice(index, 1);
-  await updateContacts(contacts);
-
+export const getContactById = async (_id) => {
+  const result = await Contact.findById(_id);
   return result;
 };
-export const addContact = async (data) => {
-  const contacts = await listContacts();
-  const newContact = {
-    id: nanoid(),
-    ...data,
-  };
-  contacts.push(newContact);
-  await updateContacts(contacts);
 
-  return newContact;
-};
-export const updateContactById = async (id, data) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === id);
-  if (index === -1) {
-    return null;
-  }
+export const addContact = (data) => Contact.create(data);
 
-  contacts[index] = { ...contacts[index], ...data };
-  await updateContacts(contacts);
+export const updateContactById = (id, data) =>
+  Contact.findByIdAndUpdate(id, data);
 
-  return contacts[index];
-};
-
-export const updateStatusContact = async (id, data) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === id);
-  if (index === -1) {
-    return null;
-  }
-
-  contacts[index] = { ...contacts[index], favorite: data };
-  await updateContacts(contacts);
-};
+export const deleteContactById = (id) => Contact.findByIdAndDelete(id);
