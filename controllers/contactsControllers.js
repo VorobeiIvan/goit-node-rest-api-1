@@ -41,7 +41,8 @@ const updateById = async (req, res) => {
 
 const toggleFavorite = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.updateStatusContact(id, req.body);
+  const { favorite } = req.body;
+  const result = await updateStatusContact(id, { favorite });
   if (!result) {
     throw HttpError(404, `Not found`);
   }
