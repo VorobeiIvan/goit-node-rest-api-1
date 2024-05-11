@@ -1,7 +1,7 @@
 import * as contactsServices from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 
-const getAll = async (_, res) => {
+const getAll = async (req, res) => {
   const result = await contactsServices.listContacts();
   res.json(result);
 };
@@ -22,25 +22,16 @@ const deleteById = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Not found`);
   }
-  res.json({
-    message: "Delete success",
-  });
+  res.status(200).json(result);
 };
 const add = async (req, res) => {
-  const { name, email, phone } = req.body;
-  const result = await contactsServices.addContact(name, email, phone);
+  const result = await contactsServices.addContact(req.body);
   res.status(201).json(result);
 };
 
 const updateById = async (req, res) => {
   const { id } = req.params;
-  const { name, email, phone } = req.body;
-  const result = await contactsServices.updateContactById(
-    id,
-    name,
-    email,
-    phone
-  );
+  const result = await contactsServices.updateContactById(id, req.body);
   if (!result) {
     throw HttpError(404, `Not found`);
   }
