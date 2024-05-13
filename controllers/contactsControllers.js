@@ -1,6 +1,6 @@
 import * as contactsServices from "../services/contactsServices.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const getAll = async (req, res) => {
   const result = await contactsServices.listContacts();
@@ -36,7 +36,17 @@ const updateById = async (req, res) => {
   if (!result) {
     throw HttpError(404, `Not found`);
   }
-  res.json(result);
+  res.status(200).json(result);
+};
+
+const toggleFavorite = async (req, res) => {
+  const { id } = req.params;
+  const { favorite } = req.body;
+  const result = await updateStatusContact(id, { favorite });
+  if (!result) {
+    throw HttpError(404, `Not found`);
+  }
+  res.status(200).json(result);
 };
 
 export default {
@@ -45,4 +55,5 @@ export default {
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
   deleteById: ctrlWrapper(deleteById),
+  toggleFavorite: ctrlWrapper(toggleFavorite),
 };
