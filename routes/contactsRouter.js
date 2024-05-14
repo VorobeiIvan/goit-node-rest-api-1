@@ -13,7 +13,7 @@ const contactsRouter = express.Router();
 
 contactsRouter.get("/", contactsControllers.getAll);
 
-contactsRouter.get("/:id", isValidId, contactsControllers.getById);
+contactsRouter.get("/:id", contactsControllers.getById);
 
 contactsRouter.post(
   "/",
@@ -25,7 +25,7 @@ contactsRouter.post(
 contactsRouter.put(
   "/:id",
   isEmptyBody,
-  isValidId,
+  validateBody(contactUpdateSchema),
   contactsControllers.updateById
 );
 
