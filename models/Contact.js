@@ -27,5 +27,5 @@ contactSchema.post("save", handleSaveError);
 contactSchema.pre("findOneAndUpdate", setUpdateSettings);
 contactSchema.post("findOneAndUpdate", handleSaveError);
 
-const Contact = model("contact", contactSchema);
+const Contact = model("Contact", contactSchema);
 export default Contact;
