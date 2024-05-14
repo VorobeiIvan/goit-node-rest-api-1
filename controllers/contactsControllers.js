@@ -1,59 +1,58 @@
-import * as contactsServices from "../services/contactsServices.js";
-import HttpError from "../helpers/HttpError.js";
+import * as services from "../services/contactsServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import HttpError from "../helpers/HttpError.js";
 
-const getAll = async (req, res) => {
-  const result = await contactsServices.listContacts();
-  res.json(result);
+const getAllContacts = async (req, res) => {
+  const result = await services.listContacts();
+  res.status(200).json(result);
 };
 
-const getById = async (req, res) => {
+const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.getContactById(id);
+  const result = await services.getContactById(id);
   if (!result) {
-    throw HttpError(404, `Not found`);
-  }
-
-  res.json(result);
-};
-
-const deleteById = async (req, res) => {
-  const { id } = req.params;
-  const result = await contactsServices.removeContact(id);
-  if (!result) {
-    throw HttpError(404, `Not found`);
+    throw HttpError(404);
   }
   res.status(200).json(result);
 };
-const add = async (req, res) => {
-  const result = await contactsServices.addContact(req.body);
+
+const createContact = async (req, res) => {
+  const result = await services.addContact(req.body);
   res.status(201).json(result);
 };
 
-const updateById = async (req, res) => {
+const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsServices.updateContactById(id, req.body);
+  const result = await services.removeContact(id);
   if (!result) {
-    throw HttpError(404, `Not found`);
+    throw HttpError(404);
   }
   res.status(200).json(result);
 };
 
-const toggleFavorite = async (req, res) => {
+const updateContact = async (req, res) => {
   const { id } = req.params;
-  const { favorite } = req.body;
-  const result = await updateStatusContact(id, { favorite });
+  const result = await services.updateByIdContact(id, req.body);
   if (!result) {
-    throw HttpError(404, `Not found`);
+    throw HttpError(404);
+  }
+  res.status(200).json(result);
+};
+
+const toggleFavoriteContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await services.toggleFavoriteByIdContact(id, req.body);
+  if (!result) {
+    throw HttpError(404);
   }
   res.status(200).json(result);
 };
 
 export default {
-  getAll: ctrlWrapper(getAll),
-  getById: ctrlWrapper(getById),
-  add: ctrlWrapper(add),
-  updateById: ctrlWrapper(updateById),
-  deleteById: ctrlWrapper(deleteById),
-  toggleFavorite: ctrlWrapper(toggleFavorite),
+  getAllContacts: ctrlWrapper(getAllContacts),
+  getOneContact: ctrlWrapper(getOneContact),
+  deleteContact: ctrlWrapper(deleteContact),
+  createContact: ctrlWrapper(createContact),
+  updateContact: ctrlWrapper(updateContact),
+  toggleFavoriteContact: ctrlWrapper(toggleFavoriteContact),
 };
