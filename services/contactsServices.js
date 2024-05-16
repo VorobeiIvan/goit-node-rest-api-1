@@ -1,4 +1,4 @@
-import Contact from "../models/Contact.js";
+import Contact from "../db/models/Contact.js";
 
 export const listContacts = (search = {}) => {
   const { filter = {} } = search;
