@@ -10,7 +10,7 @@ export const getContactById = async (_id) => {
   return result;
 };
 
-export const removeContact = (contactId) => 
+export const removeContact = (contactId) =>
   Contact.findByIdAndDelete(contactId);
 
 export const addContact = (data) => Contact.create(data);
@@ -19,4 +19,4 @@ export const updateByIdContact = (contactId, data) =>
   Contact.findByIdAndUpdate(contactId, data);
 
 export const toggleFavoriteByIdContact = (contactId, favorite) =>
-  Contact.findOneAndUpdate(contactId, favorite);
+  Contact.findByIdAndUpdate(contactId, favorite);
