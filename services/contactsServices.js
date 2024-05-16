@@ -19,4 +19,4 @@ export const updateByIdContact = (contactId, data) =>
   Contact.findByIdAndUpdate(contactId, data);
 
 export const toggleFavoriteByIdContact = (contactId, favorite) =>
-  Contact.findOneAndUpdate(contactId, favorite);
+  Contact.findByIdAndUpdate(contactId, favorite);
