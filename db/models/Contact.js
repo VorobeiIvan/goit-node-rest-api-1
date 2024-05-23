@@ -19,8 +19,12 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
 
 contactSchema.post("save", handleSaveError);
