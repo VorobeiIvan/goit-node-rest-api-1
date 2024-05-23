@@ -1,32 +1,27 @@
 import express from "express";
-
-import userControllers from "../controllers/userControllers.js";
-
+import authControllers from "../controllers/userControllers.js";
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import authenticate from "../middlewares/authenticate.js";
-
 import validateBody from "../decorators/validateBody.js";
-
 import { loginSchema, registrationSchema } from "../schemas/userSchemas.js";
 
-const userRouter = express.Router();
+const authRouter = express.Router();
 
-userRouter.post(
+authRouter.post(
   "/users/register",
   isEmptyBody,
   validateBody(registrationSchema),
-  userControllers.signUp
+  authControllers.signUp
 );
 
-userRouter.post(
+authRouter.post(
   "/users/login",
   isEmptyBody,
   validateBody(loginSchema),
-  userControllers.signIn
+  authControllers.signIn
 );
 
-userRouter.get("/current", authenticate, userControllers.getCurrent);
+authRouter.get("/current", authenticate, authControllers.getCurrent);
+authRouter.post("/logout", authenticate, authControllers.logout);
 
-userRouter.post("/logout", authenticate, authControllers.signOut);
-
-export default userRouter;
+export default authRouter;

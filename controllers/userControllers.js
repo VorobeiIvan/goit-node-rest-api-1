@@ -1,8 +1,7 @@
-import User from "../models/User.js";
+import User from "../db/models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-import HttpError from "../helpers/HttpError.js";
 
 const { SECRET_KEY } = process.env;
 
