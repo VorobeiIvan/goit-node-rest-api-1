@@ -10,47 +10,53 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await listContacts();
+  const { _id: owner } = req.user;
+  const result = await listContacts({ owner });
   res.status(200).json(result);
 };
 
 const getOneContact = async (req, res) => {
   const { id } = req.params;
+  const { _id: owner } = req.user;
   const result = await getContactById(id);
-  if (!result) {
-    throw HttpError(404);
+  if (!result || String(result.owner) !== String(owner)) {
+    throw HttpError(404, "Contact not found");
   }
   res.status(200).json(result);
 };
 
 const createContact = async (req, res) => {
-  const result = await addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await addContact({ ...req.body, owner });
   res.status(201).json(result);
 };
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
+  const { _id: owner } = req.user;
   const result = await removeContact(id);
-  if (!result) {
-    throw HttpError(404);
+  if (!result || String(result.owner) !== String(owner)) {
+    throw HttpError(404, "Contact not found");
   }
-  res.status(200).json(result);
+  res.status(200).json({ message: "Contact deleted" });
 };
 
 const updateContact = async (req, res) => {
   const { id } = req.params;
+  const { _id: owner } = req.user;
   const result = await updateByIdContact(id, req.body);
-  if (!result) {
-    throw HttpError(404);
+  if (!result || String(result.owner) !== String(owner)) {
+    throw HttpError(404, "Contact not found");
   }
   res.status(200).json(result);
 };
 
 const toggleFavoriteContact = async (req, res) => {
   const { id } = req.params;
+  const { _id: owner } = req.user;
   const result = await toggleFavoriteByIdContact(id, req.body);
-  if (!result) {
-    throw HttpError(404);
+  if (!result || String(result.owner) !== String(owner)) {
+    throw HttpError(404, "Contact not found");
   }
   res.status(200).json(result);
 };
