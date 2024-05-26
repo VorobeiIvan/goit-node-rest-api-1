@@ -8,14 +8,14 @@ import { loginSchema, registrationSchema } from "../schemas/userSchemas.js";
 const authRouter = express.Router();
 
 authRouter.post(
-  "/users/register",
+  "/register",
   isEmptyBody,
   validateBody(registrationSchema),
   authControllers.signUp
 );
 
 authRouter.post(
-  "/users/login",
+  "/login",
   isEmptyBody,
   validateBody(loginSchema),
   authControllers.signIn
