@@ -2,11 +2,13 @@ import User from "../db/models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-
+import gravatar from "gravatar";
 const { SECRET_KEY } = process.env;
 
 const signUp = async (req, res) => {
   const { email, password } = req.body;
+
+  const avatarURL = gravatar.url(email, { s: "250", d: "retro" });
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -15,13 +17,14 @@ const signUp = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new User({ email, password: hashedPassword });
+  const newUser = new User({ email, password: hashedPassword, avatarURL });
   await newUser.save();
 
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
     },
   });
 };
@@ -48,15 +51,17 @@ const signIn = async (req, res) => {
     user: {
       email: user.email,
       subscription: user.subscription,
+      avatarURL: user.avatarURL,
     },
   });
 };
 
 const getCurrent = (req, res) => {
-  const { email, subscription } = req.user;
+  const { email, subscription, avatarURL } = req.user;
   res.status(200).json({
     email,
     subscription,
+    avatarURL,
   });
 };
 
