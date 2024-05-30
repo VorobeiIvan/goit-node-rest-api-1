@@ -1,7 +1,5 @@
 import { Schema, model } from "mongoose";
-
 import { handleSaveError, setUpdateSettings } from "./hooks.js";
-
 import { emailRegexp } from "../../constants/user-constants.js";
 
 const userSchema = new Schema(
@@ -25,14 +23,19 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    avatarURL: {
+      type: String,
+      default: function () {
+        const gravatar = require("gravatar");
+        return gravatar.url(this.email, { s: "200", r: "pg", d: "mm" });
+      },
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
 userSchema.post("save", handleSaveError);
-
 userSchema.pre("findByIdAndUpdate", setUpdateSettings);
-
 userSchema.post("findByIdAndUpdate", handleSaveError);
 
 const User = model("User", userSchema);
