@@ -1,22 +1,14 @@
 import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendVerificationEmail = (email, token) => {
+const { SENDGRID_API_KEY, BASE_URL, SENDGRID_MAIL, PORT } = process.env;
+sgMail.setApiKey(SENDGRID_API_KEY);
+
+export const sendEmail = async ({ email, verificationToken }) => {
   const msg = {
     to: email,
-    from: "your-email@example.com",
-    subject: "Email Verification",
-    text: `Please verify your email by clicking the link: ${process.env.BASE_URL}/users/verify/${token}`,
+    from: SENDGRID_MAIL,
+    subject: "Verify your email",
+    html: `<a target="_blank" href="${BASE_URL}:${PORT}/users/verify/${verificationToken}">Verify your email</a>`,
   };
-
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log("Email sent");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  return await sgMail.send(msg);
 };
-
-export { sendVerificationEmail };
