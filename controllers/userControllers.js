@@ -1,12 +1,15 @@
-import User from "../db/models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import { v4 as uuidv4 } from "uuid";
 import gravatar from "gravatar";
+import User from "../db/models/User.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 const { SECRET_KEY } = process.env;
 
 const signUp = async (req, res) => {
   const { email, password } = req.body;
+  const verificationToken = uuidv4();
 
   const avatarURL = gravatar.url(email, { s: "250", d: "retro" });
 
@@ -17,7 +20,12 @@ const signUp = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new User({ email, password: hashedPassword, avatarURL });
+  const newUser = new User({
+    email,
+    password: hashedPassword,
+    avatarURL,
+    verificationToken,
+  });
   await newUser.save();
 
   res.status(201).json({
@@ -36,7 +44,9 @@ const signIn = async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "Email or password is wrong" });
   }
-
+  if (!user || !user.verify) {
+    return res.status(401).json({ message: "User not verified" });
+  }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res.status(401).json({ message: "Email or password is wrong" });
